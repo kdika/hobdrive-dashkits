@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui>
+
+  <section name="General" fixed="true" align-descriptions-size="true">
+
+    <grid rows="25,,30" cols="30,,30">
+      
+      <!--  111 111 -->
+<!--
+      <item id="FuelLevel" if='${Layout_ECUFuel != true}'
+            inherit="_FuelIndicator, _EditAction" onclick="NewFueling"/>
+      <item id="ECUFuelLevel" if='${Layout_ECUFuel = true}'
+            inherit="_FuelIndicator, _EditAction" onclick="NewFueling"/>
+-->
+      <item if='${!sexists("ECUFuelInTank")}' 
+         id="_ECUFuelLevelJoint" text-evaluator='$${Vehicle_tank * svalue("ECUFuelLevel") / 100 } ${t("liters")} / $${svaluef_units("ECUFuelLevel"; 0)}' 
+         units="none" text-align="center"/>
+
+      <!--  111 222 -->
+      <switch index='$${svalue("FuelEconomy_trip") &lt; svalue("FuelEconomy_NoIdling") + 10 ? 0 : 1 }'
+              interval="5000">
+        <item id="FuelEconomy_trip" />
+        <item id="FuelEconomy_NoIdling" />
+      </switch>
+      <!--  111 333 -->
+      <switch index='$${svalid("ControlModuleVoltage") ? 1 : 0}' interval="5000">
+        <item id="BatteryVoltage"       period='5000'/>
+        <item id="ControlModuleVoltage" period='5000'/>
+      </switch>
+
+      <!--  222 111 -->
+      <item id="RPM" size='medium'/>
+      <!--  222 222 -->
+      <item id="Speed" size='giant'/>
+      <!--  222 333 -->
+      <union>
+        <!-- need improvement of such constructions. here overlapping may happen. description should always be visible -->
+        <item id="ShiftPosition" XXvisibility='$${Sensor_Value}' size='huge' inherit="_ShiftPositionValue"/>
+        <item id="AT_R" visibility='$${Sensor_Value}' custom-description="sname.ShiftPosition" text-evaluator='R' size="huge"/>
+        <item id="AT_P" visibility='$${Sensor_Value}' custom-description="sname.ShiftPosition" text-evaluator='P' size="huge"/> 
+        <item id="AT_N" visibility='$${Sensor_Value}' custom-description="sname.ShiftPosition" text-evaluator='N' size="huge"/> 
+        <item id="AT_D" visibility='$${Sensor_Value}' custom-description="sname.ShiftPosition" text-evaluator='D' size="huge"/> 
+        <item id="AT_P_N" visibility='$${Sensor_Value}' custom-description="sname.ShiftPosition" text-evaluator='P/N' size="huge"/> 
+        <item id="AT_P_N_R" visibility='$${Sensor_Value}' custom-description="sname.ShiftPosition" text-evaluator='P/N/R' size="huge"/> 
+        <item id="AT_R-1" visibility='$${Sensor_Value}' custom-description="sname.ShiftPosition" text-evaluator='R-1' size="huge"/>
+        <item id="AT_R-2" visibility='$${Sensor_Value}' custom-description="sname.ShiftPosition" text-evaluator='R-2' size="huge"/>
+        <item id="AT_R-3" visibility='$${Sensor_Value}' custom-description="sname.ShiftPosition" text-evaluator='R-3' size="huge"/>
+
+        <grid rows=",30,5" cols=",20,"
+              if='${Layout_ShiftAssistant = true}'
+              >
+          <item/><item/><item/>
+          <union>
+            <item id="ShiftPosition" visibility='$${ svalue("RPM") &gt; 4000 and svalue("ShiftPosition") &lt; 5 ? 1 : 0 }'
+                  description="hidden" text-evaluator='$${svalue("ShiftPosition")}⮕$${svalue("ShiftPosition")+1}'
+                  interval="1000" size="small"/>
+            <item id="ShiftPosition" visibility='$${ (svalue("RPM") &lt; 1200 and svalue("ShiftPosition") &gt; 1) ? 1 : 0 }'
+                  description="hidden" text-evaluator='$${svalue("ShiftPosition")}⮕$${svalue("ShiftPosition")-1}'
+                  interval="1000" size="small"/>
+          </union>
+          <item/>
+          <item id="AT_SolenoidLock" visibility='$${svalid("AT_SolenoidLock")}' description="hidden" text-evaluator='$${Sensor_Value != 0 ? "SLock" : ""}' size="small"/>
+          <item/><item/><item/>
+        </grid>
+      </union>
+
+      <!--  333 111 -->
+      <item id="CoolantTemp" period="2000"/>
+
+      <!--  333 222 -->
+      <stack-horizontal
+        if='${Layout_RollTemp != true}'
+        >
+        <item id="ATFTemp" if='ATFTemp' units="below"  period='2000'/>
+        <item id="CVTTemp" if='CVTTemp' units="below"  period='2000'/>
+        <item id="IntakeAirTemp" if='IntakeAirTemp' units="below" period='2000'/>
+        <item id="AirTemp" if='AirTemp' units="below" period='2000'/>
+      </stack-horizontal>
+      <!-- Roll over every 4 seconds -->
+      <switch if='${Layout_RollTemp = true}'
+              index='$${ svalue("DateTime") / 4000 }'>
+        <item id="ATFTemp" if='ATFTemp' inherit="_CycleIcon" units="below"  period='2000'/>
+        <item id="CVTTemp" if='CVTTemp' inherit="_CycleIcon" units="below"  period='2000'/>
+        <item id="EngineOilTemp" if='EngineOilTemp' inherit="_CycleIcon" units="below"  period='2000'/>
+        <item id="IntakeAirTemp" if='IntakeAirTemp' inherit="_CycleIcon" units="below" period='2000'/>
+        <item id="AirTemp" if='AirTemp' inherit="_CycleIcon" units="below" period='2000'/>
+      </switch>
+
+      <!--  333 333 -->
+      <item id="BatteryStatus_SoH" />
+    </grid>
+  </section>
+
+</ui>
