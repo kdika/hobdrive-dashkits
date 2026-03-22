@@ -12,7 +12,7 @@
       <item id="ECUFuelLevel" if='${Layout_ECUFuel = true}'
             inherit="_FuelIndicator, _EditAction" onclick="NewFueling"/>
 -->
-      <item if='ECUFuelInTank' 
+      <item if='ECUFuelLevel' 
          id="ECUFuelInTank" text-evaluator='$${svaluef_units("ECUFuelInTank"; 0)}/$${svaluef_units("ECUFuelLevel"; 0)}' 
          units="none" text-align="center"/> 
  
