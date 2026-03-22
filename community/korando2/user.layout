@@ -12,14 +12,13 @@
       <item id="ECUFuelLevel" if='${Layout_ECUFuel = true}'
             inherit="_FuelIndicator, _EditAction" onclick="NewFueling"/>
 -->
-      <item if='ECUFuelLevel' 
+      <item if='ECUFuelInTank' 
          id="ECUFuelInTank" text-evaluator='$${svaluef_units("ECUFuelInTank"; 0)}/$${svaluef_units("ECUFuelLevel"; 0)}' 
          units="none" text-align="center"/> 
  
-  <gauge if='${!sexists("ECUFuelInTank")}' 
+      <item if='${!sexists("ECUFuelInTank")}' 
          id="ECUFuelLevel" text-evaluator='$${Vehicle_tank * svalue("ECUFuelLevel") / 100 } ${t("liters")} / $${svaluef_units("ECUFuelLevel"; 0)}' 
          units="none" text-align="center"/>
-
 
       <!--  111 222 -->
       <switch index='$${svalue("FuelEconomy_trip") &lt; svalue("FuelEconomy_NoIdling") + 10 ? 0 : 1 }'
