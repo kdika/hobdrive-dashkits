@@ -15,10 +15,17 @@
       <item if='ECUFuelInTank' 
          id="ECUFuelInTank" text-evaluator='$${svaluef_units("ECUFuelInTank"; 0)}/$${svaluef_units("ECUFuelLevel"; 0)}' 
          units="none" text-align="center"/> 
- 
+
+      <item if='${!sexists("ECUFuelInTank")}' 
+         id="ECUFuelLevel" text-evaluator='$${Vehicle_tank * svalue("ECUFuelLevel") / 100 } ${t("liters")}' 
+         units="none" text-align="center"/>
+
+<!-- 
       <item if='${!sexists("ECUFuelInTank")}' 
          id="ECUFuelLevel" text-evaluator='$${Vehicle_tank * svalue("ECUFuelLevel") / 100 } ${t("liters")} / $${svaluef_units("ECUFuelLevel"; 0)}' 
          units="none" text-align="center"/>
+-->
+
 
       <!--  111 222 -->
       <switch index='$${svalue("FuelEconomy_trip") &lt; svalue("FuelEconomy_NoIdling") + 10 ? 0 : 1 }'
@@ -91,7 +98,13 @@
       </switch>
 
       <!--  333 333 -->
-      <item id="BatteryStatus_SoH" />
+      <union>
+        <grid rows="" cols=",">
+          <item id="BatteryStatus_SoC"/>
+          <item id="BatteryStatus_SoH" />
+        </grid>
+      </union>
+
     </grid>
   </section>
 
